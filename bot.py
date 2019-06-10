@@ -71,17 +71,29 @@ async def mkGroup(ctx, *, params:createGroupParams=createGroupParams.defaults())
         newGroup.save()
         await ctx.send(newGroup.groupName + " successfully created.")
 
+@bot.command()
+async def descGroup(ctx, *, params:createGroupParams=createGroupParams.defaults()):
+        isDone = False
+        for eachGroup in allGroups:
+            if not isDone:
+                if eachGroup.groupName == params['name']:
+                    eachGroup.groupDesc = params['desc']
+                    eachGroup.save()
+                    isDone = True
+        await ctx.send("Group Name: " + params['name'] + " description updated.")
 
 @bot.command()
 async def defGroup(ctx, *, params:defineGroupParams=defineGroupParams.defaults()):
         isDone = False
         definition = ""
+        groupMembers = []
         for eachGroup in allGroups:
             if not isDone:
                 if eachGroup.groupName == params['name']:
                     definition = eachGroup.groupDesc
+                    groupMembers = eachGroup.groupMembers
                     isDone = True
-        await ctx.send("Group Name: " + eachGroup.groupName + "\n\nGroup Users: " + str(eachGroup.groupMembers) +"\n\nGroup Description: " + definition)
+        await ctx.send("Group Name: " + params['name'] + "\n\nGroup Users: " + str(groupMembers) +"\n\nGroup Description: " + definition)
 
 @bot.command()
 async def addUser(ctx, *, params:defineGroupParams=defineGroupParams.defaults()):
@@ -91,7 +103,7 @@ async def addUser(ctx, *, params:defineGroupParams=defineGroupParams.defaults())
                 if thisGroup.groupName == params['name']:
                     thisGroup.addMember("\"" + ctx.author._user.display_name + "\"")
                     isDone = True
-        await ctx.send(ctx.author._user.display_name + " successfully added to " + thisGroup.groupName)
+        await ctx.send(ctx.author._user.display_name + " successfully added to " + params['name'])
 
 @bot.command()
 async def delUser(ctx, *, params:defineGroupParams=defineGroupParams.defaults()):
@@ -101,7 +113,7 @@ async def delUser(ctx, *, params:defineGroupParams=defineGroupParams.defaults())
                 if thisGroup.groupName == params['name']:
                     thisGroup.removeMember("\"" + ctx.author._user.display_name + "\"")
                     isDone = True
-        await ctx.send(ctx.author._user.display_name + " successfully removed from " + thisGroup.groupName)
+        await ctx.send(ctx.author._user.display_name + " successfully removed from " + params['name'])
 
 @bot.command()
 async def lsGroup(ctx):
@@ -153,5 +165,6 @@ async def getBio(ctx, *, params: defineGroupParams = defineGroupParams.defaults(
     #    output = output + eachLine + "\n"
     await ctx.send("Bio for " + params['name'] + ":\n" + bioFile.read())
 
-bot.run('TOKEN')
+botToken = [line.rstrip('\n') for line in open('bot.Token')]
+bot.run(botToken[0])
 
