@@ -53,6 +53,7 @@ async def commands(ctx):
                    "command argName=value -- PRO TIP -- Use \"double quotes\" to surround any name, phrase, or sentence that has a space in it. Discord Python wrapper does not do a very good job of parsing commands.\n\n" \
                    "mkGroup name=\"Group Name\" desc=\"Group Description\" -- Allows you to create a group with a name and description\n" \
                    "defGroup name=\"Group Name\" desc=\"Group Description\" -- Retrieves the group definition and all subscribed users.\n" \
+                   "descGroup name=\"Group Name\" desc=\"Group Description\" -- Allows you to change the definition of a group.\n" \
                    "lsGroup name=\"Group Name\" -- Lists all groups currently available.\n" \
                    "lsUser name=\"User Name\" -- Lists all groups the user queried is a member of.\n" \
                    "addUser name=\"Group Name\" -- Adds you as a member of a group.\n" \
