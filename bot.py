@@ -38,6 +38,14 @@ defineBioParams = discord_argparse.ArgumentConverter(
     )
 )
 
+defineUserParams = discord_argparse.ArgumentConverter(
+    desc = discord_argparse.RequiredArgument(
+        str,
+        doc="The Name Of The User",
+        default="UserX"
+    )
+)
+
 
 
 @bot.event
@@ -64,6 +72,9 @@ async def commands(ctx):
 
         await ctx.send(commands)
 
+
+
+# region Group Commands
 @bot.command()
 async def mkGroup(ctx, *, params:createGroupParams=createGroupParams.defaults()):
         newGroup = groups.aGroup()
@@ -73,7 +84,7 @@ async def mkGroup(ctx, *, params:createGroupParams=createGroupParams.defaults())
         await ctx.send(newGroup.groupName + " successfully created.")
 
 @bot.command()
-async def descGroup(ctx, *, params:createGroupParams=createGroupParams.defaults()):
+async def upGroupDesc(ctx, *, params:createGroupParams=createGroupParams.defaults()):
         isDone = False
         for eachGroup in allGroups:
             if not isDone:
@@ -84,7 +95,7 @@ async def descGroup(ctx, *, params:createGroupParams=createGroupParams.defaults(
         await ctx.send("Group Name: " + params['name'] + " description updated.")
 
 @bot.command()
-async def defGroup(ctx, *, params:defineGroupParams=defineGroupParams.defaults()):
+async def getGroup(ctx, *, params:defineGroupParams=defineGroupParams.defaults()):
         isDone = False
         definition = ""
         groupMembers = []
@@ -97,7 +108,7 @@ async def defGroup(ctx, *, params:defineGroupParams=defineGroupParams.defaults()
         await ctx.send("Group Name: " + params['name'] + "\n\nGroup Users: " + str(groupMembers) +"\n\nGroup Description: " + definition)
 
 @bot.command()
-async def addUser(ctx, *, params:defineGroupParams=defineGroupParams.defaults()):
+async def addGroupMember(ctx, *, params:defineGroupParams=defineGroupParams.defaults()):
         isDone = False
         for thisGroup in allGroups:
             if not isDone:
@@ -107,7 +118,7 @@ async def addUser(ctx, *, params:defineGroupParams=defineGroupParams.defaults())
         await ctx.send(ctx.author._user.display_name + " successfully added to " + params['name'])
 
 @bot.command()
-async def delUser(ctx, *, params:defineGroupParams=defineGroupParams.defaults()):
+async def delGroupMember(ctx, *, params:defineGroupParams=defineGroupParams.defaults()):
         isDone = False
         for thisGroup in allGroups:
             if not isDone:
@@ -117,7 +128,7 @@ async def delUser(ctx, *, params:defineGroupParams=defineGroupParams.defaults())
         await ctx.send(ctx.author._user.display_name + " successfully removed from " + params['name'])
 
 @bot.command()
-async def lsGroup(ctx):
+async def listAllGroups(ctx):
         groupList = []
         for aGroup in allGroups:
             if not groupList.__contains__(aGroup.groupName):
@@ -132,8 +143,9 @@ async def lsGroup(ctx):
         #            isDone = True
         #await ctx.send(thisGroup.groupName + " Users:\n" + str(userList))
 
+
 @bot.command()
-async def lsUser(ctx, *, params: defineGroupParams = defineGroupParams.defaults()):
+async def getUserGroups(ctx, *, params: defineGroupParams = defineGroupParams.defaults()):
     groupList = []
     fullName = "\"" + params["name"] + "\""
     for thisGroup in allGroups:
@@ -143,7 +155,17 @@ async def lsUser(ctx, *, params: defineGroupParams = defineGroupParams.defaults(
                     if not groupList.__contains__(thisGroup.groupName):
                         groupList.append(thisGroup.groupName)
     await ctx.send(params['name'] + " belongs to these groups:\n" + str(groupList))
+# endregion
 
+
+@bot.command()
+async def addUser(ctx):
+    userName = ctx.author._user.display_name
+    fileName = "user." + userName
+    userFile = open(fileName, "w+")
+    userFile.write("")
+    userFile.close()
+    await ctx.send("User File For: " + userName + " successfully created.")
 
 @bot.command()
 async def addBio(ctx, *, params: defineBioParams = defineBioParams.defaults()):
